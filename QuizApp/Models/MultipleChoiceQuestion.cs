@@ -1,19 +1,15 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace QuizApp.Models
 {
-    public class MultipleChoiceQuestion : IQuestion
+    public class MultipleChoiceQuestion : Question
     {
-        public Guid Id { get; set; }
-        public string Type { get; set; } = "MultipleChoice";
-        public string Description { get; set; }
-        public List<string> Options { get; set; }
-        public IEnumerable<string> CorrectAnswers { get; set; }
-
-
-        public MultipleChoiceQuestion()
-        {
-            Options = new List<string>();
-            CorrectAnswers = new List<string>();
+        public MultipleChoiceQuestion() {
+            Type = "MultipleChoice";
         }
+        
+        [Required]
+        public List<string> CorrectAnswer { get; set; } = new List<string>();
     }
 }

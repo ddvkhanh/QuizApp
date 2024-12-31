@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using QuizApp.DataAccess;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+//db connection
+builder.Services.AddDbContext<QuizAppContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
 
 var app = builder.Build();
 
