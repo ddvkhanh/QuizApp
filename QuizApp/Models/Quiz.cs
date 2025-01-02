@@ -1,16 +1,21 @@
-﻿namespace QuizApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace QuizApp.Models
 {
     public class Quiz
     {
-        public Guid Id { get; set; }
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        [Required]
         public string Name { get; set; }
-        public List<IQuestion> Questions { get; set; }
+        [Required]
+        public List<Question> Questions { get; set; }
         public DateTime CreatedAt { get; set; }
         public TimeSpan? TimeLimit { get; set; }
 
         public Quiz()
         {
-            Questions = new List<IQuestion>();
+            Questions = new List<Question>();
         }
     }
 }

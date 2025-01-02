@@ -1,17 +1,19 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace QuizApp.Models
 {
-    public class SingleChoiceQuestion:IQuestion
+    public class SingleChoiceQuestion:Question
     {
-        public Guid Id { get; set; }
-        public string Type { get; set; } = "SingleChoice";
-        public string Description { get; set; }
-        public List<string> Options { get; set; }
-        public IEnumerable<string> CorrectAnswer { get; set; }
-
-        public SingleChoiceQuestion()
-        {
-            Options = new List<string>();
+        public SingleChoiceQuestion() {
+            Type = "SingleChoice";
         }
+        [Required]
+        public string CorrectAnswer 
+        {
+            get => base.CorrectAnswer; 
+            set => base.CorrectAnswer = value;
+        }
+
     }
 }
