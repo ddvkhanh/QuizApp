@@ -8,8 +8,11 @@ namespace QuizApp.Models
         public MultipleChoiceQuestion() {
             Type = "MultipleChoice";
         }
-        
-        [Required]
-        public List<string> CorrectAnswer { get; set; } = new List<string>();
+
+        public List<string> CorrectAnswers
+        {
+            get => CorrectAnswer?.Split(',', StringSplitOptions.None).ToList() ?? new List<string>();
+            set => CorrectAnswer = string.Join(",", value);
+        }
     }
 }

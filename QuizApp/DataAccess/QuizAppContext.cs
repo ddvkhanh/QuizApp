@@ -19,25 +19,16 @@ namespace QuizApp.DataAccess
                 .HasValue<MultipleChoiceQuestion>("MultipleChoice")
                 .HasValue<SingleChoiceQuestion>("SingleChoice");
 
-            //modelBuilder.Entity<MultipleChoiceQuestion>()
-            //.Property(mc => mc.CorrectAnswer)
-            //.HasConversion(
-            //    v => string.Join(',', v),                // Serialize List<string> to a string
-            //    v => v.Split(',', StringSplitOptions.None).ToList()) // Deserialize string to List<string>
-            //.Metadata.SetValueComparer(new ValueComparer<List<string>>(
-            //    (c1, c2) => c1.SequenceEqual(c2),        
-            //    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), 
-            //    c => c.ToList()));
-
-            //modelBuilder.Entity<SingleChoiceQuestion>()
-            //    .Property(q => q.CorrectAnswer)
-            //    .HasColumnName("CorrectAnswer");
-
             modelBuilder.Entity<QuizResult>()
                 .HasOne<Quiz>()
                 .WithMany()
                 .HasForeignKey(r => r.QuizId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //Ignore CorrectAnswers column of MultipleChoice so it stores in only 1 column CorrectAnswer
+            modelBuilder.Entity<MultipleChoiceQuestion>()
+                .Ignore(mc => mc.CorrectAnswers);
         }
+
     }
 }

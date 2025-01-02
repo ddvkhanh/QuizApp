@@ -9,7 +9,11 @@ namespace QuizApp.Models
             Type = "SingleChoice";
         }
         [Required]
-        public string CorrectAnswer { get; set; }
+        public string CorrectAnswer 
+        {
+            get => base.CorrectAnswer; 
+            set => base.CorrectAnswer = value;
+        }
 
     }
 }

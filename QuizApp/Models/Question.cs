@@ -12,5 +12,6 @@ namespace QuizApp.Models
         public string Description { get; set; }
         [Required]
         public List<string> Options { get; set; }
+        public string CorrectAnswer { get; set; }
     }
 }
