@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizApp.Database;
 
@@ -11,9 +12,11 @@ using QuizApp.Database;
 namespace QuizApp.Database.Migrations
 {
     [DbContext(typeof(QuizAppContext))]
-    partial class QuizAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250103050133_Update-DB-3")]
+    partial class UpdateDB3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +43,7 @@ namespace QuizApp.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("QuestionType")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(8)
                         .HasColumnType("nvarchar(8)");
@@ -49,7 +52,7 @@ namespace QuizApp.Database.Migrations
 
                     b.ToTable("Questions");
 
-                    b.HasDiscriminator<string>("QuestionType").HasValue("Question");
+                    b.HasDiscriminator<string>("Type").HasValue("Question");
 
                     b.UseTphMappingStrategy();
                 });

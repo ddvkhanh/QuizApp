@@ -7,7 +7,7 @@ namespace QuizApp.Database.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
-        public string Type { get; set; }
+        public string QuestionType { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]

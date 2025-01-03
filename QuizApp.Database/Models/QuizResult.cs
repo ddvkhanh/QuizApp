@@ -6,9 +6,11 @@ namespace QuizApp.Database.Models
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
+
         [Required]
-        public Guid QuizId { get; set; }
         public int Score { get; set; }
+
+        [Required]
         public DateTime TakenAt { get; set; }
     }
 }

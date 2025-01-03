@@ -6,7 +6,7 @@ namespace QuizApp.Database.Models
     public class SingleChoiceQuestion:Question
     {
         public SingleChoiceQuestion() {
-            Type = "SingleChoice";
+            QuestionType = "single";
         }
         [Required]
         public string CorrectAnswer 

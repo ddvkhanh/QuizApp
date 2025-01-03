@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using QuizApp.Database.QuizAppContext;
+using QuizApp.Database;
 
 #nullable disable
 
-namespace QuizApp.Migrations
+namespace QuizApp.Database.Migrations
 {
     [DbContext(typeof(QuizAppContext))]
-    [Migration("20250102024110_Create-Tables")]
+    [Migration("20250103014252_Create-Tables")]
     partial class CreateTables
     {
         /// <inheritdoc />
@@ -20,12 +20,12 @@ namespace QuizApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("QuizApp.Models.Question", b =>
+            modelBuilder.Entity("QuizApp.Database.Models.Question", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace QuizApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Options")
+                    b.PrimitiveCollection<string>("Options")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -48,16 +48,11 @@ namespace QuizApp.Migrations
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
 
-                    b.Property<Guid?>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
 
                     b.ToTable("Questions");
 
@@ -66,34 +61,10 @@ namespace QuizApp.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("QuizApp.Models.Quiz", b =>
+            modelBuilder.Entity("QuizApp.Database.Models.QuizResult", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan?>("TimeLimit")
-                        .HasColumnType("time");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Quizzes");
-                });
-
-            modelBuilder.Entity("QuizApp.Models.QuizResult", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("QuizId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Score")
@@ -104,44 +75,25 @@ namespace QuizApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizId");
-
                     b.ToTable("Results");
                 });
 
-            modelBuilder.Entity("QuizApp.Models.MultipleChoiceQuestion", b =>
+            modelBuilder.Entity("QuizApp.Database.Models.MultipleChoiceQuestion", b =>
                 {
-                    b.HasBaseType("QuizApp.Models.Question");
+                    b.HasBaseType("QuizApp.Database.Models.Question");
+
+                    b.PrimitiveCollection<string>("CorrectAnswers")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("MultipleChoice");
                 });
 
-            modelBuilder.Entity("QuizApp.Models.SingleChoiceQuestion", b =>
+            modelBuilder.Entity("QuizApp.Database.Models.SingleChoiceQuestion", b =>
                 {
-                    b.HasBaseType("QuizApp.Models.Question");
+                    b.HasBaseType("QuizApp.Database.Models.Question");
 
                     b.HasDiscriminator().HasValue("SingleChoice");
-                });
-
-            modelBuilder.Entity("QuizApp.Models.Question", b =>
-                {
-                    b.HasOne("QuizApp.Models.Quiz", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId");
-                });
-
-            modelBuilder.Entity("QuizApp.Models.QuizResult", b =>
-                {
-                    b.HasOne("QuizApp.Models.Quiz", null)
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("QuizApp.Models.Quiz", b =>
-                {
-                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

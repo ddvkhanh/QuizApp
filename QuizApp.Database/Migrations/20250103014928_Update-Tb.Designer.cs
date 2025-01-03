@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizApp.Database;
 
@@ -11,9 +12,11 @@ using QuizApp.Database;
 namespace QuizApp.Database.Migrations
 {
     [DbContext(typeof(QuizAppContext))]
-    partial class QuizAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250103014928_Update-Tb")]
+    partial class UpdateTb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,8 +45,12 @@ namespace QuizApp.Database.Migrations
 
                     b.Property<string>("QuestionType")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -75,14 +82,14 @@ namespace QuizApp.Database.Migrations
                 {
                     b.HasBaseType("QuizApp.Database.Models.Question");
 
-                    b.HasDiscriminator().HasValue("multiple");
+                    b.HasDiscriminator().HasValue("MultipleChoice");
                 });
 
             modelBuilder.Entity("QuizApp.Database.Models.SingleChoiceQuestion", b =>
                 {
                     b.HasBaseType("QuizApp.Database.Models.Question");
 
-                    b.HasDiscriminator().HasValue("single");
+                    b.HasDiscriminator().HasValue("SingleChoice");
                 });
 #pragma warning restore 612, 618
         }

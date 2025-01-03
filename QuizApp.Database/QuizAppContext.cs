@@ -1,33 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using QuizApp.Database.Models;
 
-namespace QuizApp.Database.QuizAppContext;
-
-public class QuizAppContext : DbContext
+namespace QuizApp.Database
 {
-    public QuizAppContext(DbContextOptions<QuizAppContext> options): base (options) {}
-
-    public DbSet<Question> Questions { get; set; }
-    public DbSet<Quiz> Quizzes { get; set; }
-    public DbSet<QuizResult> Results { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class QuizAppContext : DbContext
     {
-        modelBuilder.Entity<Question>()
-            .HasDiscriminator<string>("QuestionType")
-            .HasValue<MultipleChoiceQuestion>("MultipleChoice")
-            .HasValue<SingleChoiceQuestion>("SingleChoice");
+        // Constructor to accept DbContextOptions
+        public QuizAppContext(DbContextOptions<QuizAppContext> options) : base(options) { }
 
-        modelBuilder.Entity<QuizResult>()
-            .HasOne<Quiz>()
-            .WithMany()
-            .HasForeignKey(r => r.QuizId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // DbSets for the application
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<QuizResult> Results { get; set; }
 
-        //Ignore CorrectAnswers column of MultipleChoice so it stores in only 1 column CorrectAnswer
-        modelBuilder.Entity<MultipleChoiceQuestion>()
-            .Ignore(mc => mc.CorrectAnswers);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configure inheritance for questions (e.g., SingleChoice and MultipleChoice)
+            modelBuilder.Entity<Question>()
+                .HasDiscriminator<string>("QuestionType")
+                .HasValue<SingleChoiceQuestion>("single")
+                .HasValue<MultipleChoiceQuestion>("multiple");
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
-
 }
