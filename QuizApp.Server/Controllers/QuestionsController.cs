@@ -122,7 +122,7 @@ namespace QuizApp.Server.Controllers
 
                 await _appContext.SaveChangesAsync();
 
-                return NoContent();
+                return Ok(new { message = "Question updated successfully." });
             }
             catch (Exception ex)
             {
@@ -147,7 +147,7 @@ namespace QuizApp.Server.Controllers
                 _appContext.Questions.Remove(question);
                 await _appContext.SaveChangesAsync();
 
-                return NoContent();
+                return Ok(new { message = "Question deleted successfully." });
             }
             catch (Exception ex)
             {
