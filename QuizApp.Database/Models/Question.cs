@@ -14,5 +14,7 @@ namespace QuizApp.Database.Models
         public List<string> Options { get; set; }
         [Required]
         public string CorrectAnswer { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
