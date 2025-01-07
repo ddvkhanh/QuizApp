@@ -12,8 +12,8 @@ using QuizApp.Database;
 namespace QuizApp.Database.Migrations
 {
     [DbContext(typeof(QuizAppContext))]
-    [Migration("20250103014252_Create-Tables")]
-    partial class CreateTables
+    [Migration("20250107090334_Create-Initial-Tables")]
+    partial class CreateInitialTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,9 @@ namespace QuizApp.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -45,12 +48,8 @@ namespace QuizApp.Database.Migrations
 
                     b.Property<string>("QuestionType")
                         .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.HasKey("Id");
 
@@ -82,18 +81,14 @@ namespace QuizApp.Database.Migrations
                 {
                     b.HasBaseType("QuizApp.Database.Models.Question");
 
-                    b.PrimitiveCollection<string>("CorrectAnswers")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("MultipleChoice");
+                    b.HasDiscriminator().HasValue("multiple");
                 });
 
             modelBuilder.Entity("QuizApp.Database.Models.SingleChoiceQuestion", b =>
                 {
                     b.HasBaseType("QuizApp.Database.Models.Question");
 
-                    b.HasDiscriminator().HasValue("SingleChoice");
+                    b.HasDiscriminator().HasValue("single");
                 });
 #pragma warning restore 612, 618
         }

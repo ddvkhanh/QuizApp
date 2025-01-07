@@ -73,7 +73,7 @@ namespace QuizApp.Server.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Score = score,
-                    TakenAt = DateTime.UtcNow
+                    TakenAt = DateTime.Now
                 };
                 _appContext.Results.Add(quizResult);
                 await _appContext.SaveChangesAsync();
@@ -87,3 +87,4 @@ namespace QuizApp.Server.Controllers
         } 
     }
 }
+

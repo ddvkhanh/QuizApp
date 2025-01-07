@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace QuizApp.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateTables : Migration
+    public partial class CreateInitialTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,12 +16,11 @@ namespace QuizApp.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuestionType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Options = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    QuestionType = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
-                    CorrectAnswers = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -26,7 +26,7 @@ namespace QuizApp.Server.Controllers
         {
             try
             {
-                var questions = await _appContext.Questions.ToListAsync();
+                var questions = await _appContext.Questions.OrderBy(q => q.CreatedAt).ToListAsync();
 
                 if (random)
                 {
@@ -82,6 +82,8 @@ namespace QuizApp.Server.Controllers
                     _logger.LogWarning("Received a null Question payload.");
                     return BadRequest("Question data is null.");
                 }
+
+                question.CreatedAt = DateTime.Now;
 
                 _appContext.Questions.Add(question);
                 await _appContext.SaveChangesAsync();
