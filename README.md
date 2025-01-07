@@ -9,7 +9,7 @@ A simple ASP.NET Core web application for managing and taking quizzes. QuizApp p
 - Restful APIs to manage and retrieve questions.
 - Responsive Frontend
 
-#Installation
+##Installation
 ###1. Clone the Repository
 ```bash
 Copy code
@@ -43,7 +43,7 @@ Copy code
 dotnet run
 ```
 
-#Technologies Used
+##Technologies Used
 ###Backend:
 - ASP.NET Core
 - Entity Framework Core
