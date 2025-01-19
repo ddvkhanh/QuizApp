@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@chakra-ui/react"],
   },
+  env :{
+    AUTH0_LOG_LEVEL: 'debug',
+  }
   /* config options here */
 };
 
