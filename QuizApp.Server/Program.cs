@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QuizApp.Database;
 using QuizApp.Server.Converters;
 
@@ -31,7 +34,20 @@ builder.Services.AddCors(options =>
 
 // Configure database connection
 builder.Services.AddDbContext<QuizAppContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))); 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+//Configure JWT authentication
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.Authority = domain;
+    options.Audience = builder.Configuration["Auth0:Audience"];
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        NameClaimType = ClaimTypes.NameIdentifier
+    };
+});
 
 var app = builder.Build();
 
@@ -54,12 +70,15 @@ app.Use(async (context, next) =>
     await next();
 });
 
+
 app.UseCors(); 
 
-app.UseRouting(); 
+app.UseRouting();
 
-app.UseAuthorization(); 
+app.UseAuthentication();
 
-app.MapControllers(); 
+app.UseAuthorization();
 
-app.Run(); 
+app.MapControllers();
+
+app.Run();
