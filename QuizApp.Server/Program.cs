@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QuizApp.Database;
 using QuizApp.Server.Converters;
+using QuizApp.Server.Services.Interfaces;
+using QuizApp.Server.Services.Implementations;
+using QuizApp.Database.Repositories.Interfaces;
+using QuizApp.Database.Repositories.Implementations;
+
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +54,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         NameClaimType = ClaimTypes.NameIdentifier
     };
 });
+
+//dependency
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IQuestionsService, QuestionsService>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+builder.Services.AddScoped<IQuizService, QuizService>();
+
+
 
 var app = builder.Build();
 

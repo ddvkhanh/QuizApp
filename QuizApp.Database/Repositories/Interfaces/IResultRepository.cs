@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuizApp.Database.Models;
+
+namespace QuizApp.Database.Repositories.Interfaces
+{
+    public interface IResultRepository
+    {
+        Task<List<QuizResult>> GetResultsAsync();
+        Task AddResultAsync(QuizResult result);
+    }
+}

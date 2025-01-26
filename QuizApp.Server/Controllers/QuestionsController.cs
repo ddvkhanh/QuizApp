@@ -1,22 +1,26 @@
 ﻿using System;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.Database;
 using QuizApp.Database.Models;
+using QuizApp.Server.Services.Implementations;
+using QuizApp.Server.Services.Interfaces;
 
 namespace QuizApp.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class QuestionsController : ControllerBase
     {
-        private readonly QuizAppContext _appContext;
+        private readonly IQuestionsService _questionsService;
         private readonly ILogger<QuestionsController> _logger;
 
-        public QuestionsController(QuizAppContext appContext, ILogger<QuestionsController> logger)
+        public QuestionsController(IQuestionsService questionsService, ILogger<QuestionsController> logger)
         {
-            _appContext = appContext;
+            _questionsService = questionsService;
             _logger = logger;
         }
 
@@ -26,18 +30,7 @@ namespace QuizApp.Server.Controllers
         {
             try
             {
-                var questions = await _appContext.Questions.OrderBy(q => q.CreatedAt).ToListAsync();
-
-                if (random)
-                {
-                    var randomIndex = new Random();
-                    for (int i = questions.Count -1; i > 0; i--)
-                    {
-                        int j = randomIndex.Next(i + 1);
-                        (questions[i], questions[j]) = (questions[j], questions[i]);
-                    }
-                }
-
+                var questions = await _questionsService.GetQuestionsAsync(random);
                 return Ok(questions);
             }
             catch (Exception ex)
@@ -53,7 +46,7 @@ namespace QuizApp.Server.Controllers
         {
             try
             {
-                var question = await _appContext.Questions.FindAsync(id);
+                var question = await _questionsService.GetQuestionByIdAsync(id);
                 if (question == null)
                 {
                     _logger.LogWarning("Question with id {Id} not found.", id);
@@ -77,17 +70,7 @@ namespace QuizApp.Server.Controllers
 
             try
             {
-                if (question == null)
-                {
-                    _logger.LogWarning("Received a null Question payload.");
-                    return BadRequest("Question data is null.");
-                }
-
-                question.CreatedAt = DateTime.Now;
-
-                _appContext.Questions.Add(question);
-                await _appContext.SaveChangesAsync();
-
+                await _questionsService.AddQuestionAsync(question);
                 return CreatedAtAction(nameof(GetQuestion), new { id = question.Id }, question);
             }
             catch (Exception ex)
@@ -103,28 +86,12 @@ namespace QuizApp.Server.Controllers
         {
             try
             {
-                if (id != updatedQuestion.Id)
-                {
-                    _logger.LogWarning("Mismatch between route ID {Id} and payload ID {PayloadId}.", id, updatedQuestion.Id);
-                    return BadRequest("ID mismatch.");
-                }
-
-                var existingQuestion = await _appContext.Questions.FindAsync(id);
-                if (existingQuestion == null)
-                {
-                    _logger.LogWarning("Question with id {Id} not found.", id);
-                    return NotFound($"Question with ID {id} not found.");
-                }
-
-                // Update properties
-                existingQuestion.Description = updatedQuestion.Description;
-                existingQuestion.CorrectAnswer = updatedQuestion.CorrectAnswer;
-                existingQuestion.Options = updatedQuestion.Options;
-                existingQuestion.QuestionType = updatedQuestion.QuestionType;
-
-                await _appContext.SaveChangesAsync();
-
+                await _questionsService.UpdateQuestionAsync(id, updatedQuestion);
                 return Ok(new { message = "Question updated successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -139,17 +106,12 @@ namespace QuizApp.Server.Controllers
         {
             try
             {
-                var question = await _appContext.Questions.FindAsync(id);
-                if (question == null)
-                {
-                    _logger.LogWarning("Question with id {Id} not found.", id);
-                    return NotFound($"Question with ID {id} not found.");
-                }
-
-                _appContext.Questions.Remove(question);
-                await _appContext.SaveChangesAsync();
-
-                return Ok(new { message = "Question deleted successfully." });
+               await _questionsService.DeleteQuestionAsync(id);
+               return Ok(new { message = "Question deleted successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {

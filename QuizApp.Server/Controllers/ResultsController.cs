@@ -1,20 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.Database;
 using QuizApp.Database.Models;
+using QuizApp.Server.Services.Interfaces;
 
 namespace QuizApp.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ResultsController : ControllerBase
     {
-        private readonly QuizAppContext _appContext;
         private readonly ILogger<ResultsController> _logger;
+        private readonly IResultsService _service;
 
-        public ResultsController(QuizAppContext appContext, ILogger<ResultsController> logger)
+        public ResultsController(IResultsService service, ILogger<ResultsController> logger)
         {
-            _appContext = appContext;
+            _service = service;
             _logger = logger;
         }
 
@@ -24,7 +27,7 @@ namespace QuizApp.Server.Controllers
         {
             try
             {
-                var results = await _appContext.Results.ToListAsync();
+                var results = await _service.GetResultsAsync();
                 return Ok(results);
             }
             catch (Exception ex)
@@ -44,9 +47,7 @@ namespace QuizApp.Server.Controllers
 
             try
             {
-                result.TakenAt = DateTime.UtcNow;
-                _appContext.Results.Add(result);
-                await _appContext.SaveChangesAsync();
+                await _service.AddResultAsync(result);
                 return CreatedAtAction(nameof(GetResults), new { id = result.Id }, result);
             }
             catch (Exception ex)
